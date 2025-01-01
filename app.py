@@ -8,18 +8,23 @@ from experta import KnowledgeEngine, Fact, Rule, P
 # import gym
 # from gym import spaces
 import numpy as np
+import json
 
 # session['username'] = user_data['username']
 # session['UserID'] = user_id
 # session['user_ID'] = user_id
 
 app = Flask(__name__)
-app.secret_key = 'semluiz_123'
 
-cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+
+
+# Load Firebase credentials from the environment variable
+cred = credentials.Certificate(json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT')))
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://ai-proj-appdev-default-rtdb.firebaseio.com/' 
+    'databaseURL': os.environ.get('FIREBASE_DATABASE_URL')
 })
+
 
 db = firebase_admin.db 
 
