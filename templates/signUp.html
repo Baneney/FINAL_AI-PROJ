@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="signUp.css"> -->
+     <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #DED4B9; /* Light grey background */
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9; /* Beige background */
+        }
+
+        .right .content {
+            width: 70%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .right h1 {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .right p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        form {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-field {
+            display: block;
+            width: 80%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box; 
+            background-color: #ECEBDE;
+            border: 1px solid #ccc;
+        }
+
+        .input-field:focus {
+            border: 2px solid #000;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .sign-in-button {
+            display: block;
+            width: 80%;
+            padding: 13px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            box-sizing: border-box;
+            background-color: #39463D;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sign-in-button:hover {
+            background-color: #333;
+        }
+
+        .left img {
+            max-width: 90%;
+            height: 90%;
+            border: 5px solid #000;
+        }
+        
+        .flash-container {
+            position: fixed;
+            top: 20px; /* Adjust as needed */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for the width of the container */
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px; /* Set a width for the container */
+            z-index: 10;
+        }
+
+        .flash-message {
+            background-color: #4CAF50; /* Green for success */
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeIn 0.5s;
+            width: 100%; /* Make the message take the full width of the container */
+            text-align: center; /* Center the text */
+        }
+
+        .flash-message span {
+            flex: 1; /* Allow the span to take up available space */
+            text-align: center; /* Center the text within the span */
+        }
+
+        .flash-message.error {
+            background-color: #f44336; /* Red for error */
+        }
+
+        .close-flash {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+     </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Flash message -->
+        <div class="flash-container" id="flashContainer">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}                    
+        </div>
+        <!-- Left Section -->
+        <div class="left">
+            <img src="{{ url_for('static', filename='images/sign-up.png') }}" alt="Illustration">
+        </div>
+        <!-- Right Section -->
+        <div class="right">
+            <div class="content">
+                <h1>SIGN UP</h1>
+                <br/><br/><br/>
+                <form action="/register" method="POST"> <!-- Add form element -->
+                    <input type="text" id="userName" name="userName" class="input-field" placeholder="Username" required>
+                    <input type="email" id="email" name="email" class="input-field" placeholder="Email" required>
+                    <input type="text" id="passWord" name="passWord" class="input-field" placeholder="Password" required>
+                    <input type="text" id="confPassWord" name="confPassWord" class="input-field" placeholder="Confirm Password" required>
+                    <button type="submit" class="sign-in-button" style="margin-top: 50px">REGISTER</button> <!-- Change button type to submit -->
+                </form>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">Already have an account? <a href="/" style="color: #000;">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-remove flash messages after 5 seconds
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach((message) => {
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            });
+        });
+
+        function showFlashMessage(message, type) {
+            const flashContainer = document.getElementById('flashContainer');
+            const flashMessage = document.createElement('div');
+            flashMessage.className = `flash-message ${type}`;
+            flashMessage.innerHTML = `
+                <span>${message}</span>
+                <button class="close-flash" onclick="this.parentElement.remove();">&times;</button>
+            `;
+            flashContainer.appendChild(flashMessage);
+
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

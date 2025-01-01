@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="landingPage.css"> -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9; /* Light grey background */
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #DED4B9; /* Beige background */
+        }
+
+        .left .content {
+            width: 70%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left h1 {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .left p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        form {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-field{
+            display: block;
+            width: 80%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box; 
+            background-color: #ECEBDE;
+        }
+
+        .input-field:focus {
+            border: 2px solid #000; /* Change the border to black or any desired color */
+            outline: none; /* Removes the default browser outline */
+            background-color: #fff; /* Optional: change the background color when focused */
+        }
+
+        .input-field {
+            border: 1px solid #ccc;
+        }
+
+        .sign-in-button {
+            display: block;
+            width: 80%;
+            padding: 13px;
+            margin: 10px 0;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box; /* Ensures padding does not affect width */
+        }
+
+        .sign-in-button {
+            background-color: #39463D;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sign-in-button:hover {
+            background-color: #333;
+        }
+
+        .right img {
+            max-width: 90%;
+            height: 90%;
+            border: 5px solid #000;
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 20px; /* Adjust as needed */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for the width of the container */
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px; /* Set a width for the container */
+            z-index: 10;
+        }
+
+        .flash-message {
+            background-color: #4CAF50; /* Green for success */
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeIn 0.5s;
+            width: 100%; /* Make the message take the full width of the container */
+            text-align: center; /* Center the text */
+        }
+
+        .flash-message span {
+            flex: 1; /* Allow the span to take up available space */
+            text-align: center; /* Center the text within the span */
+        }
+
+        .flash-message.error {
+            background-color: #f44336; /* Red for error */
+        }
+
+        .close-flash {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Flash message -->
+        <div class="flash-container" id="flashContainer">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}                    
+        </div>
+        <!-- Left Section -->
+        <div class="left">
+            <div class="content">
+                <h1>Welcome to Schedulater</h1>
+                <p style="color: black;">Because you’re never late with your schedule!</p>
+                <br/><br/><br/>
+                <h1 style="font-size: 30px; margin-bottom: 20px;">SIGN IN</h1>
+                <form action="/signIn" method="POST">
+                    <input type="text" id="userName" name="userName" class="input-field" placeholder="Username">
+                    <input type="password" id="passWord" name="passWord" class="input-field" placeholder="Password">
+                    <button class="sign-in-button" style="margin-top: 50px">
+                        SIGN IN
+                    </button>
+                </form>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">Don't have an account? <a href="/signUp" style="color: #000;">Sign up</a></p>
+            </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right">
+            <img src="{{ url_for('static', filename='images/sign-in.png') }}" alt="Illustration">
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-remove flash messages after 5 seconds
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach((message) => {
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            });
+
+        });
+
+        function showFlashMessage(message, type) {
+            const flashContainer = document.getElementById('flashContainer');
+            const flashMessage = document.createElement('div');
+            flashMessage.className = `flash-message ${type}`;
+            flashMessage.innerHTML = `
+                <span>${message}</span>
+                <button class="close-flash" onclick="this.parentElement.remove();">&times;</button>
+            `;
+            flashContainer.appendChild(flashMessage);
+
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

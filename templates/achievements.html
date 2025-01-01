@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #DED4B9;
+        }
+
+        .header {
+            background-color: #39463D;
+            text-align: center;
+            padding-top: 36px;
+            padding-bottom: 20px;
+            height: 50px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-container {
+            display: flex;
+            gap: 18px;
+            justify-content: flex-end;
+            width: 100%;
+            position: absolute;
+            top: 36px;
+            right: 40px;
+        }
+
+        .icon-button {
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 36px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-button:hover, .icon-button:hover {
+            color: #ffffff ;
+        }
+
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 74px;
+            right: -1px;
+            background-color: #39463D;
+            border-radius: 5px;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            width: 150px;
+        }
+
+        .dropdown-item {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #2a362a;
+        }
+
+        .badge {
+            background: #638C6D;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        
+        .achievement-logo {
+            width: 200px; 
+            height: 200px;
+            object-fit: contain;
+            margin: 10px;
+            /* align-items: center;
+            justify-content: center;
+            display: flex; */
+        }
+
+        .notif-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 74px;
+            right: 120px;
+            background-color: #39463D;
+            border-radius: 5px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            width: 300px;
+        }
+
+        .notification-indicator {
+            position: absolute; 
+            top: 0; 
+            right: 129px; 
+            width: 10px; 
+            height: 10px; 
+            background-color: red; 
+            border-radius: 50%; 
+            display: none; 
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 50px;
+            margin: 20px auto;
+            max-width: 1500px;
+            margin-top: 90px;
+            margin-bottom: 90px;
+        }
+
+        .achievement-box {
+    
+            background-color: #ffffff;
+            height: 350px; /* You can adjust this height as needed */
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex; /* Use flexbox */
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items horizontally */
+            justify-content: center; /* Center items vertically */
+            text-align: center; /* Center text */
+            padding: 20px; /* Add some padding */
+        }
+
+        .silhouette {
+            opacity: 0.5; /* Make the box semi-transparent */
+            filter: grayscale(100%); /* Apply a grayscale filter */
+            pointer-events: none; /* Disable interactions if desired */
+        }
+
+
+    </style>
+</head>
+<body>
+    <div>
+        <header class="header">
+            <button class="back-button" onclick="window.location.href='/dashboard';">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>ACHIEVEMENTS</h1>
+            <div class="icon-container">
+                <button class="icon-button" id="notifButton"> <!-- NOTIFICATION BUTTON -->
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-indicator" id="notificationIndicator" style="display: none;"></span>
+                </button>
+                <div class="notif-dropdown-menu" id="notifdropdownMenu"> <!-- NOTIFICATION MODAL -->  
+                    <h3 style="text-align: left; color: white; margin-bottom: 10px">NOTIFICATION</h1>      
+                    <p id="notificationMessage" style="color: white; margin-bottom: 20px">No notifications for now.</p>
+                </div>
+                <button class="icon-button">
+                    <i class="fas fa-trophy"></i>
+                </button>
+                <button class="icon-button" id="profileButton">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile" class="dropdown-item">Profile</a>
+                    <a href="/" class="dropdown-item">Log out</a>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="achievements-grid">
+                {% for achievement, details in achievements.items() if achievement != 'username' %}
+                    <div class="achievement-box {% if details['earnedDate'] == 'None' %}silhouette{% endif %}">
+                        <h3 style="margin-top: 20px;">{{ achievement.replace('_', ' ').capitalize() }}</h3>
+                        <span class="badge">{{ details['status'] }}</span> <br>
+                    
+                        <!-- Display the logo for the achievement -->
+                        {% if details.get('logo') %}
+                            <img src="{{ details['logo'] }}" alt="{{ achievement }} logo" class="achievement-logo">
+                        {% endif %}
+                    
+                        {% if details['earnedDate'] %}
+                            {% if details['earnedDate'] == 'None' %}
+                                <p>Earned on: Not Yet</p>
+                            {% else %}
+                                <p>Earned on: {{ details['earnedDate'] }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p>Earned on: Not Yet</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>        
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {    
+
+            var notifications = {{ notifications | tojson }}
+
+            const notificationIndicator = document.getElementById("notificationIndicator");
+
+            if (notifications.length > 0){
+                notificationIndicator.style.display = 'block';   //shows red dot for the notif
+            }else{
+                notificationIndicator.style.display = 'none';// hides it when theres no notifs
+            }
+
+
+            // Dropdown logic
+            const profileButton = document.getElementById('profileButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent click from bubbling
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            window.addEventListener('click', () => {
+                dropdownMenu.style.display = 'none';
+            });
+
+
+            // Notif logic
+            const notifButton = document.getElementById('notifButton');
+            const notifdropdownMenu = document.getElementById('notifdropdownMenu');
+            
+            notifButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent click from bubbling
+                // notifdropdownMenu.style.display = notifdropdownMenu.style.display === 'block' ? 'none' : 'block';   
+                displayNotifications(notifications);          
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', (event) => {
+                notifdropdownMenu.style.display = 'none';
+            });
+           
+        });
+
+        function displayNotifications(notifications) {
+            const notificationMessage = document.getElementById("notificationMessage");
+
+            // Check if there are notifications to display
+            if (notifications.length > 0) {
+                notificationMessage.innerHTML = notifications.join("<br>");
+            } else {
+                notificationMessage.innerHTML = "You have no notifications.";
+            }
+
+            // Show the dropdown
+            // notifdropdownMenu.style.display = "block";
+            notifdropdownMenu.style.display = notifdropdownMenu.style.display === 'block' ? 'none' : 'block';   
+        }
+    </script>
+</body>
+</html>

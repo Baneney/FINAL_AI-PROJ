@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5dc; /* Light beige background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #39463D; /* Dark green background */
+            width: 400px;
+            padding: 40px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h1 {
+            color: #000; /* Black heading */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #fff; /* White text */
+            margin-bottom: 9px;
+            margin-top: 20px;
+        }
+
+        .form-group input, .form-group select, .btn-save {
+            width: 100%; /* Ensures all elements take up the full width of their container */
+            padding: 15px; /* Adds consistent padding */
+            font-size: 14px; /* Consistent font size */
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box; /* Ensures consistent width including padding and borders */
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus {
+            border: 2px solid black; /* Custom border color */
+            outline: none; /* Removes the default browser outline */
+        }        
+
+        .slider-container {
+            margin-bottom: 15px;
+        }
+
+        .slider-container label {
+            color: #fff; /* White text */
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .slider-container input[type="range"] {
+            width: 100%;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #fff; /* White text */
+            font-size: 14px;
+        }
+
+        .btn-save {
+            background-color: #DED4B9; /* Dark green button */
+            color: black;
+            text-align: center;
+            font-weight: bold; /* Makes button text bold */
+            text-transform: uppercase; /* Makes button text uppercase */
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background-color: #C8BFA6; /* Slightly darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color:#fff;">Add Task</h1>
+        <form>
+            <div class="form-group">
+                <label>Task Name</label>
+                <input type="text" id="taskName" name="taskName" placeholder="Enter task name">
+            </div>
+            <div class="form-group">
+                <label>Task Deadline</label>
+                <input type="date" id="taskDeadline" name="taskDeadline">
+            </div>
+            <div class="form-group">
+                <label>Own Deadline</label>
+                <input type="date" id="ownDeadline" name="ownDeadline">
+            </div>
+            <div class="slider-container">
+                <label>Task Importance Scale</label>
+                <input type="range" id="importanceScale" name="importanceScale" min="1" max="10">
+                <div class="slider-labels">
+                    <span>Low</span>
+                    <span>Medium</span>
+                    <span>High</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="taskType">Task Type</label>
+                <select id="taskType" name="taskType">
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                </select>
+            </div>
+            <br/><br/>
+            <button type="submit" class="btn-save">Save</button>
+        </form>
+    </div>
+</body>
+</html>

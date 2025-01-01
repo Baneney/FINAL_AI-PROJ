@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #DED4B9;
+        }
+
+        .header {
+            background-color: #39463D;
+            text-align: center;
+            padding-top: 36px;
+            padding-bottom: 20px;
+            height: 50px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-container {
+            display: flex;
+            gap: 18px;
+            justify-content: flex-end;
+            width: 100%;
+            position: absolute;
+            top: 36px;
+            right: 40px;
+        }
+
+        .icon-button {
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+
+        .email-edit-button {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+        }
+
+        .email-edit-button i {
+            font-size: 25px;
+        }
+
+        .user-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 35px;
+            margin-bottom: 50px;
+            position: relative; /* Keep these elements positioned relative to the container */
+            z-index: 1;
+        }
+
+        .user-icon i {
+            font-size: 220px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        .container {
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            background-color: #DED4B9;
+            align-items: center;  
+            justify-content: center;  
+            height: calc(100vh - 100px); 
+        }
+
+        .input-field {
+            width: 100%; /* Full width inside the container */
+            max-width: 400px; /* Max width for larger screens */
+            padding: 15px;
+            margin: 15px 0; /* Added margin for spacing */
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
+            background-color: #ECEBDE;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .input-field:focus {
+            border: 2px solid #000;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 36px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-button:hover, .icon-button:hover {
+            color: #E3E3E3;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 74px;
+            right: -1px;
+            background-color: #39463D;
+            border-radius: 5px;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            width: 150px;
+        }
+
+        .dropdown-item {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #2a362a;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;  /* Ensures form elements are centered horizontally */
+            justify-content: center;  /* Centers form elements vertically within the container */
+            width: 100%;  /* Full width within its parent */
+            max-width: 700px;  /* Prevent the form from being too wide */
+            position: relative; /* Keep these elements positioned relative to the container */
+            z-index: 1;
+        }
+
+        .email-with-button-container{
+            margin-left: 300px;
+        }
+
+        .password-with-button-container{
+            margin-left: 300px;
+            margin-bottom: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #39463D;
+            justify-content: space-between; 
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .confirm-modal-content {
+            background-color: black; /* Change background color to black */
+            color: white; /* Change text color to white for contrast */
+            padding: 20px;
+            border-radius: 10px;
+            width: 500px; /* Adjust width as needed */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .btn-save {
+            font-family: 'Montserrat', sans-serif;
+            width: 360px;
+            height: 40px;
+            background-color: #DED4B9;
+            color: black;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            border-radius: 40px;
+            display: block; /* Ensure it behaves like a block element */
+            margin: 0 auto; /* Center the button */
+        }
+
+        .btn-save:hover {
+            background-color: #C8BFA6;
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 20px; /* Adjust as needed */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for the width of the container */
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px; /* Set a width for the container */
+            z-index: 10;
+        }
+
+        .flash-message {
+            background-color: #4CAF50; /* Green for success */
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeIn 0.5s;
+            width: 100%; 
+            text-align: center; 
+        }
+
+        .flash-message span {
+            flex: 1; 
+            text-align: center; 
+        }
+
+        .flash-message.error {
+            background-color: #f44336; 
+        }
+
+        .close-flash {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-container {
+            background-color: #39463D;
+            border-radius: 20px;
+            padding: 40px;
+            height: 78%;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: absolute; /* Position it relative to .container */
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <header class="header">
+            <button class="back-button" onclick="window.location.href='/dashboard';">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>PROFILE</h1>
+            <div class="icon-container">
+                <button class="icon-button">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button class="icon-button" onclick="window.location.href='/achievements';">
+                    <i class="fas fa-trophy"></i>
+                </button>
+                <button class="icon-button" id="profileButton">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" class="dropdown-item">Profile</a>
+                    <a href="/" class="dropdown-item">Log out</a>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="flash-container" id="flashContainer">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                <span>{{ message }}</span>
+                                <button class="close-flash" onclick="this.parentElement.remove();">&times;</button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}                    
+            </div>
+            <div class="profile-container">
+
+            </div>
+            <!-- Profile Icon -->
+            <div class="user-icon">
+                <button class="icon-button">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+            </div>
+    
+            <!-- Input Fields -->
+            <div class="form-container" style="width: 100%; max-width: 700px;">
+                <input type="text" id="userName" name="userName" class="input-field" placeholder="Username" value="{{ user['username'] }}" readonly>  
+    
+                <div class="email-with-button-container" style="display: flex; align-items: center; width: 100%;">
+                    <input type="email" id="email" name="email" class="input-field" placeholder="Email" value="{{ user['email'] }}" readonly>
+                    <button type="button" class="icon-button email-edit-button" id="edit-email-button">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+    
+                <div class="password-with-button-container" style="display: flex; align-items: center; width: 100%;">
+                    <input type="password" id="passWord" name="passWord" class="input-field" placeholder="Password" value="{{ user['password'] }}" readonly>
+                    <button type="button" class="icon-button email-edit-button" id="edit-password-button">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+            
+
+        <!-- MODAL FOR UPDATING EMAIL -->
+        <div class="modal" id="email-modal">
+            <div class="modal-content confirm-modal-content">
+                <h1>Change Email</h1>
+                <form action="/updateEmail" method="POST">
+                    <input type="email" id="UPDATE_EMAIL" name="UPDATE_EMAIL" class="input-field" placeholder="Enter Email" style="border-radius: 10px;" required>
+                    <button type="submit" class="btn-save" style="margin-bottom: 15px; margin-top: 15px;">Update</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL FOR UPDATING PASSWORD-->
+        <div class="modal" id="password-modal">
+            <div class="modal-content confirm-modal-content">
+                <h1>Change Password</h1>
+                <form action="/updatePassword" method="POST">
+                    <input type="text" id="CurrentPass" name="CurrentPass" class="input-field" placeholder="Current Password" style="border-radius: 10px;" required>
+                    <input type="text" id="NewPass1" name="NewPass1" class="input-field" placeholder="New Password" style="border-radius: 10px;" required>
+                    <input type="text" id="NewPass2" name="NewPass2" class="input-field" placeholder="Confirm New Password" style="border-radius: 10px;" required>
+                    <button type="submit" class="btn-save" style="margin-bottom: 30px; margin-top: 30px;">Update</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {    
+
+            // Dropdown logic
+            const profileButton = document.getElementById('profileButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent click from bubbling
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            window.addEventListener('click', () => {
+                dropdownMenu.style.display = 'none';
+            });
+
+
+            // MODAL LOGIC FOR THE EMAIL UPDATE
+            const emailEditButton = document.getElementById('edit-email-button');
+            const emailModal = document.getElementById('email-modal');
+
+            // Show the modal when the "edit email" button is clicked
+            emailEditButton.addEventListener('click', function() {
+                emailModal.style.display = 'flex'; // Show the modal
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === emailModal) {
+                    emailModal.style.display = 'none'; // Close the modal if clicked outside
+                }
+            });
+
+
+            //MODAL LOGIC FOR THE PASSWORD UPDATE
+            const passEditButton = document.getElementById('edit-password-button');
+            const passModal = document.getElementById('password-modal');
+
+            // Show the modal when the "edit email" button is clicked
+            passEditButton.addEventListener('click', function() {
+                passModal.style.display = 'flex'; // Show the modal
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === passModal) {
+                    passModal.style.display = 'none'; // Close the modal if clicked outside
+                }
+            });
+
+
+            //Removes the Flash Message after the time allocated
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach((message) => {
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
