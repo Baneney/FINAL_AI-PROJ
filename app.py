@@ -516,10 +516,16 @@ def register():
     users_ref = db.reference('users')
     users = users_ref.get()
 
+    retrieve_username = None
+
     for user_id, data in users.items():
         if data.get('username') == username:
-            flash("Username Already Exist", "error")
-            return redirect(url_for('signUp')) 
+            retrieve_username = data.get('username')
+            break
+    
+    if retrieve_username == username:
+        flash("Username Already Exist.", "error")
+        return redirect(url_for('signUp')) 
             
 
     if password != confirm_password:
