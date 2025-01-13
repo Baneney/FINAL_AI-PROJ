@@ -518,7 +518,7 @@ def register():
 
     for user_id, data in users.items():
         if data.get('username') == username:
-            flash("Username Already Exist.", "error")
+            flash("Username Already Exist", "error")
             return redirect(url_for('signUp')) 
             
 
