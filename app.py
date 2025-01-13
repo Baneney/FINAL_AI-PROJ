@@ -513,6 +513,15 @@ def register():
     confirm_password = request.form['confPassWord']
     BgImage = 'https://shorturl.at/m7UpZ'
 
+    users_ref = db.reference('users')
+    users = users_ref.get()
+
+    for user_id, data in users.items():
+        if data.get('username') == username:
+            flash("Username Already Exist.", "error")
+            return redirect(url_for('signUp')) 
+            
+
     if password != confirm_password:
         flash("Passwords do not match!", "error")
         return redirect(url_for('signUp')) 
