@@ -177,6 +177,7 @@ def dashboard():
     for achievement_id, achievement_data in achievements.items():
         if achievement_data.get('username') == username:
             if isinstance(achievement_data, dict):  # Check if it's a dictionary
+                count = 0  # Counter to track the number of achievements
                 for achievement_name, achievement_details in achievement_data.items(): 
                     if achievement_name != 'username': 
                         if achievement_details['status'] == 'Completed':
@@ -184,8 +185,12 @@ def dashboard():
                                 'name': achievement_name,
                                 'logo': achievement_details['logo'],
                             })
+                            count += 1  # Increment the counter
+                            if count == 3:  # mo stop after 3 achievements
+                                break
             else:
                 print(f"Unexpected data type for achievement_data: {type(achievement_data)}")
+
 
     for user_id, data in users.items():
         if data.get('username') == username:
