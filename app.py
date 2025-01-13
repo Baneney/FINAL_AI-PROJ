@@ -521,6 +521,7 @@ def register():
     for user_id, data in users.items():
         if data.get('username') == username:
             retrieve_username = data.get('username')
+            print('SAME SILA')
             break
     
     if retrieve_username == username:
