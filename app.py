@@ -189,7 +189,7 @@ def dashboard():
                             if count == 3:  # mo stop after 3 achievements
                                 break
             else:
-                print(f"Unexpected data type for achievement_data: {type(achievement_data)}")
+                print(f"Unexpected data type for achievement: {type(achievement_data)}")
 
 
     for user_id, data in users.items():
