@@ -483,7 +483,6 @@ def count_weekend_tasks(tasks_ref):
     weekend_task_count = 0
     for task in tasks_ref:
         task_date = task.get('start')  # Assumes 'date' field exists
-        print('TASK_DATE FRO CONS: ', task_date)
         task_date_obj = datetime.strptime(task_date, '%Y-%m-%d')
         if task_date_obj.weekday() >= 5:  # Saturday (5) or Sunday (6)
             weekend_task_count += 1
