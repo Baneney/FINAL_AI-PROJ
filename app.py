@@ -19,20 +19,20 @@ app = Flask(__name__)
 
 
 #uncomment if hosted
-# app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
-# cred = credentials.Certificate(json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT')))
-# firebase_admin.initialize_app(cred, {
-#     'databaseURL': os.environ.get('FIREBASE_DATABASE_URL')
-# })
+cred = credentials.Certificate(json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT')))
+firebase_admin.initialize_app(cred, {
+    'databaseURL': os.environ.get('FIREBASE_DATABASE_URL')
+})
 
 # uncomment  if (Local host)
-app.secret_key = 'semluiz_123'
+# app.secret_key = 'semluiz_123'
 
-cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://ai-proj-appdev-default-rtdb.firebaseio.com/' 
-})
+# cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
+# firebase_admin.initialize_app(cred, {
+#     'databaseURL': 'https://ai-proj-appdev-default-rtdb.firebaseio.com/' 
+# })
 
 
 db = firebase_admin.db 
