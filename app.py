@@ -4,6 +4,7 @@ import os
 from firebase_admin import credentials, db
 from datetime import datetime, timedelta
 from experta import KnowledgeEngine, Fact, Rule, P
+from datetime import datetime, time
 # from stable_baselines3 import PPO
 # import gym
 # from gym import spaces
@@ -16,13 +17,21 @@ import json
 
 app = Flask(__name__)
 
-app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
+#uncomment if hosted
+# app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
-# Load Firebase credentials from the environment variable
-cred = credentials.Certificate(json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT')))
+# cred = credentials.Certificate(json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT')))
+# firebase_admin.initialize_app(cred, {
+#     'databaseURL': os.environ.get('FIREBASE_DATABASE_URL')
+# })
+
+# uncomment  if (Local host)
+app.secret_key = 'semluiz_123'
+
+cred = credentials.Certificate(os.path.join(os.getcwd(), 'serviceAccountKey.json'))
 firebase_admin.initialize_app(cred, {
-    'databaseURL': os.environ.get('FIREBASE_DATABASE_URL')
+    'databaseURL': 'https://ai-proj-appdev-default-rtdb.firebaseio.com/' 
 })
 
 
@@ -205,12 +214,17 @@ def dashboard():
 
                 all_tasks.append({
                     'task_id': task_id,
-                    'impScale': task_data['importanceScale'],
+                    'criticality': task_data['criticality'],
                     'start': task_data['taskDeadline'],
                     'title': task_data['taskName'],
                     'desc': task_data['taskDesc'],
                     'type': task_data['taskType'],
                     'status': task_data['status'],
+                    'accessibility': task_data['accessibility'],
+                    'return': task_data['return'],
+                    'vulnerability': task_data['vulnerability'],
+                    'effect': task_data['effect'],
+                    'recognizability': task_data['recognizability'],                        
                     'priority': task_data.get('priority', 'Not assigned')
                 })
 
@@ -227,7 +241,7 @@ def dashboard():
                     notifications.append("No Notification")
     
     # Adjust priorities based on earlier deadlines
-    adjust_priorities(all_tasks)
+    display_priorities(all_tasks)
 
     # Initialize lists for MoSCoW categories
     must_have = []
@@ -355,7 +369,7 @@ def check_achievement_criteria():
         if task_data.get('username') == username:
             if task_data.get('status') == 'Done':
                 all_tasks.append({
-                    'impScale': task_data['importanceScale'],
+                    'criticality': task_data['criticality'],
                     'start': task_data['taskDeadline'],
                     'title': task_data['taskName'],
                     'type': task_data['taskType'],
@@ -523,15 +537,15 @@ def register():
 
     retrieve_username = None
 
-    for user_id, data in users.items():
-        if data.get('username') == username:
-            retrieve_username = data.get('username')
-            print('SAME SILA')
-            break
+    # for user_id, data in users.items():
+    #     if data.get('username') == username:
+    #         retrieve_username = data.get('username')
+    #         print('SAME SILA')
+    #         break
     
-    if retrieve_username == username:
-        flash("Username Already Exist.", "error")
-        return redirect(url_for('signUp')) 
+    # if retrieve_username == username:
+    #     flash("Username Already Exist.", "error")
+    #     return redirect(url_for('signUp')) 
             
 
     if password != confirm_password:
@@ -604,27 +618,41 @@ def addtask():
     task_name = request.form['taskName']
     task_desc = request.form['task-desc']
     task_deadline = request.form['taskDeadline']
-    importance_scale = request.form['importanceScale']
     task_type = request.form['taskType']
+    criticality = request.form['criticality']
+    accessibility = request.form['accessibility']
+    Return = request.form['return']
+    vulnerability = request.form['vulnerability']
+    effect = request.form['effect']
+    recognizability = request.form['recognizability']    
 
-     # Calculate the deadline in days
-    deadline_days = (datetime.strptime(task_deadline, '%Y-%m-%d') - datetime.now()).days
+
+    #  # Calculate the deadline in days
+    # deadline_days = (datetime.strptime(task_deadline, '%Y-%m-%d') - datetime.now()).days
 
     # Use the TaskPrioritizationEngine to determine the priority
     engine = TaskPrioritizationEngine()
-    priority = engine.get_priority(int(importance_scale), deadline_days)
+    urgency = get_urgency(task_deadline)
+    importance_raw = (int(criticality) + int(accessibility) + int(Return) + int(vulnerability) + int(effect) + int(recognizability)) / 6
+    importance = round(importance_raw)
+    priority = engine.get_priority(int(importance), urgency)
     # print('PRIORITY', priority)
-
-
+    print('RAW: ', importance_raw)
+    print('URGENCYYYYYYYYYYYY: ', importance, urgency)
     task_data = {
         'taskName': task_name,
         'taskDesc': task_desc,
         'taskDeadline': task_deadline,
-        'importanceScale': importance_scale,
+        'criticality': criticality,
         'taskType': task_type,
         'username': username,
         'status': 'Pending',
-        'priority' : priority
+        'priority' : priority,
+        'accessibility': accessibility,
+        'return': Return,
+        'vulnerability': vulnerability,
+        'effect': effect,
+        'recognizability': recognizability
     }
 
     try:
@@ -642,25 +670,38 @@ def update_task():
     task_name = request.form['taskNameUpdate']
     task_desc = request.form['task-descUpdate']
     task_deadline = request.form['taskDeadlineUpdate']
-    importance_scale = request.form['importanceScaleUpdate']
+    criticality = request.form['criticalityUpdate']
     task_type = request.form['taskTypeUpdate']
-    task_id = request.form['taskIDUpdate'] 
+    task_id = request.form['taskIDUpdate']
+    accessibility = request.form['accessibilityUpdate']
+    Return = request.form['returnUpdate']
+    recognizability = request.form['recognizabilityUpdate']
+    effect = request.form['effectUpdate']
+    vulnerability = request.form['vulnerabilityUpdate']
     
     # Calculate the deadline in days
     deadline_days = (datetime.strptime(task_deadline, '%Y-%m-%d') - datetime.now()).days
 
     # Use the TaskPrioritizationEngine to determine the priority
     engine = TaskPrioritizationEngine()
-    priority = engine.get_priority(int(importance_scale), deadline_days)
-    # print(task_name, task_deadline, importance_scale, task_type , task_id, priority)
+    urgency = get_urgency(task_deadline)
+    importance_raw = (int(criticality) + int(accessibility) + int(Return) + int(vulnerability) + int(effect) + int(recognizability)) / 6
+    importance = round(importance_raw)
+    priority = engine.get_priority(int(importance), urgency)
+
 
     task_data = {
         'taskName': task_name,
         'taskDesc': task_desc,
         'taskDeadline': task_deadline,
-        'importanceScale': importance_scale,
+        'criticality': criticality,
         'taskType': task_type,
-        'priority': priority
+        'priority': priority,
+        'accessibility': accessibility,
+        'return': Return,
+        'vulnerability': vulnerability,
+        'effect': effect,
+        'recognizability': recognizability
     }
 
     try:
@@ -677,7 +718,7 @@ def update_task():
             for task_id, task_data in tasks.items():
                 all_tasks.append({
                     'task_id': task_id,
-                    'impScale': task_data['importanceScale'],
+                    'criticality': task_data['criticality'],
                     'start': task_data['taskDeadline'],
                     'title': task_data['taskName'],
                     'desc': task_data['taskDesc'],
@@ -687,7 +728,7 @@ def update_task():
                 })
 
         # # Adjust priorities based on earlier deadlines
-        adjust_priorities(all_tasks)
+        display_priorities(all_tasks)
 
         # Update the priorities in the database if necessary
         for task in all_tasks:
@@ -735,69 +776,123 @@ if __name__ == '__main__':
 
 # Experta AI Engine for Task Prioritization
 class TaskPrioritizationEngine(KnowledgeEngine):
-    def __init__(self, importance_weight=0.7, deadline_weight=0.5):
+    def __init__(self):
         super().__init__()
         self.explanations = []
         self.priority = 'None' 
-        self.importance_weight = importance_weight
-        self.deadline_weight = deadline_weight
+        # self.importance_weight = importance_weight
+        # self.deadline_weight = deadline_weight
 
     # @Rule(Fact(importance=P(lambda x: x >= 8), deadline=P(lambda x: x < 3)))
-    @Rule(Fact(score=P(lambda x: x >= 6))) 
+    @Rule(Fact(quadrant=P(lambda x: x == 1))) 
     def must_have(self):
         self.priority = "Must Do" 
-        self.explanations.append("Must have because the importance is high and the deadline is near.")
 
     # @Rule(Fact(importance=P(lambda x: x > 4), deadline=P(lambda x: x <= 5)))
-    @Rule(Fact(score=P(lambda x: 3 <= x < 6)))
+    @Rule(Fact(quadrant=P(lambda x: x == 2)))
     def should_have(self):
         self.priority = "Should Do" 
-        self.explanations.append("Should have because the importance is moderate and the deadline is approaching.")
 
     # @Rule(Fact(importance=P(lambda x: x < 5), deadline=P(lambda x: x > 5)))
-    @Rule(Fact(score=P(lambda x: 0.6 <= x < 3)))
+    @Rule(Fact(quadrant=P(lambda x: x == 3)))
     def could_have(self):
         self.priority = "Could Do"
-        self.explanations.append("Could have because the importance is low and the deadline is far.")
 
     # @Rule(Fact(importance=P(lambda x: x < 5), deadline=P(lambda x: x <= 5)))
-    @Rule(Fact(score=P(lambda x: x < 0.6)))
+    @Rule(Fact(quadrant=P(lambda x: x == 4)))
     def wont_have(self):
         self.priority = "Wait To Do" 
-        self.explanations.append("Won't have because the importance is low, regardless of the deadline.")
     
-    def get_priority(self, importance, deadline):
+    def get_priority(self, importance, urgency):
         self.reset()
-        if deadline <= 0:
-            deadline = 1 
-        score = (importance * self.importance_weight) + (1 / deadline) * self.deadline_weight
-        self.declare(Fact(importance=importance, deadline=deadline, score=score))
-        print("SCORE", score)
-        self.run()
+        # if deadline <= 0:
+        #     deadline = 1 
+        # score = (importance * self.importance_weight) + (1 / deadline) * self.deadline_weight
+        # self.declare(Fact(importance=importance, deadline=deadline, score=score))
+        # print("SCORE", score)
+        # self.run()
         
+        #Important and Urgent
+        if importance == 3 and urgency == 4:
+            quadrant = 1
+        elif importance == 4 and urgency == 4:
+            quadrant = 1
+        elif importance == 3 and urgency == 3:
+            quadrant = 1
+        elif importance == 4 and urgency == 3:
+            quadrant = 1
+        
+        #Important and Not Urgent
+        elif importance == 3 and urgency == 2:
+            quadrant = 2
+        elif importance == 4 and urgency == 2:
+            quadrant = 2
+        elif importance == 3 and urgency == 1:
+            quadrant = 2
+        elif importance == 4 and urgency == 1:
+            quadrant = 2
+
+        #Not Important and Urgent
+        elif importance == 1 and urgency == 4:
+            quadrant = 3
+        elif importance == 2 and urgency == 4:
+            quadrant = 3
+        elif importance == 1 and urgency == 3:
+            quadrant = 3
+        elif importance == 2 and urgency == 3:
+            quadrant = 3
+
+        #Not Important and Not Urgent
+        elif importance == 1 and urgency == 2:
+            quadrant = 4
+        elif importance == 2 and urgency == 2:
+            quadrant = 4
+        elif importance == 1 and urgency == 1:
+            quadrant = 4
+        elif importance == 2 and urgency == 1:
+            quadrant = 4
+        
+        self.declare(Fact(importance=importance, urgency=urgency, quadrant=quadrant))
+        self.run()
+
         return self.priority
 
-def adjust_priorities(all_tasks):
+def display_priorities(all_tasks):
     for i, task in enumerate(all_tasks):
+        if task['priority'] == "Must Do":
+            task['priority'] = "Must Do"
+        elif task['priority'] == "Should Do":
+            task['priority'] = "Should Do"
+        elif task['priority'] == "Could Do":
+            task['priority'] = "Could Do"
+        elif task['priority'] == "Wait To Do":
+            task['priority'] = "Wait To Do"
+
+def get_urgency(deadline_days):
+    urgency = 0
+    # for i, task in enumerate(all_tasks):
         # Calculate the deadline in days for the current task
-        current_deadline_days = (datetime.strptime(task['start'], '%Y-%m-%d') - datetime.now()).days
-        
-        # Check if the current task is due in 5 days or less
-        if current_deadline_days <= 5:
-            for j, other_task in enumerate(all_tasks):
-                if i != j:  # Don't compare the task with itself
-                    # Calculate the deadline in days for the other task
-                    other_deadline_days = (datetime.strptime(other_task['start'], '%Y-%m-%d') - datetime.now()).days
-                    
-                    # Check if the other task has a higher priority and an earlier deadline
-                    if other_deadline_days < current_deadline_days and other_task['priority'] < task['priority']:
-                        # Decrease the priority of the current task
-                        if task['priority'] == "Must Do":
-                            task['priority'] = "Should Do"
-                        elif task['priority'] == "Should Do":
-                            task['priority'] = "Could Do"
-                        elif task['priority'] == "Could Do":
-                            task['priority'] = "Wait To Do"
+    # current_deadline_days = (datetime.strptime(deadline_days, '%Y-%m-%d') - datetime.now()).days
+    today = datetime.combine(datetime.now().date(), time.min)
+    deadline = datetime.combine(datetime.strptime(deadline_days, '%Y-%m-%d').date(), time.min)
+
+    current_deadline_days = (deadline - today).days
+
+    print('CURRENT_DATE: ', current_deadline_days)
+
+    if current_deadline_days <= 1:
+        urgency = 4
+    elif current_deadline_days <= 7:
+        urgency = 3
+    elif current_deadline_days <= 14:
+        urgency = 2
+    elif current_deadline_days <= 31:
+        urgency = 1
+    else:
+        urgency = 1
+
+    return urgency
+
 
 # # Gym Environment for Task Prioritization
 # class TaskPrioritizationEnv(gym.Env):

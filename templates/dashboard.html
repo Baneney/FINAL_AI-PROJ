@@ -228,6 +228,12 @@
             border-radius: 10px;
             width: 400px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 90vh; /* Set a maximum height for the modal */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Hide scrollbar */
         }
 
         .confirm-modal-content {
@@ -304,6 +310,15 @@
             font-family: 'Montserrat', sans-serif;
             box-sizing: border-box;
         }
+
+        .form-group input[type="range"]{
+            padding: 0;
+        }
+
+        .slider-container{
+            margin-bottom: 40px;
+        }
+
 
         .inputfield{
             width: 70px;
@@ -804,6 +819,14 @@
                     <input type="text" id="taskName" name="taskName" placeholder="Enter task name" required>
                 </div>
                 <div class="form-group">
+                    <label for="taskType">Task Type</label>
+                    <select id="taskType" name="taskType" required>
+                        <option value="Work">Work</option>
+                        <option value="Personal">School</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Task Details</label>
                     <textarea id="task-desc" name="task-desc" rows="4" cols="50" placeholder="Enter task details"></textarea>
                 </div>
@@ -813,8 +836,8 @@
                 </div>
                 <div class="form-group">
                     <div class="slider-container">
-                        <label>Task Importance Scale</label>
-                        <input type="range" id="importanceScale" name="importanceScale" min="1" max="10" required>
+                        <label style="font-weight: bold;">How important is this task?</label>
+                        <input type="range" id="criticality" name="criticality" min="1" max="4" required>
                         <div class="slider-labels">
                             <span>Low</span>
                             <span>Medium</span>
@@ -823,12 +846,59 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="taskType">Task Type</label>
-                    <select id="taskType" name="taskType" required>
-                        <option value="Work">Work</option>
-                        <option value="Personal">School</option>
-                        <option value="Personal">Personal</option>
-                    </select>
+                    <div class="slider-container">
+                        <label style="font-weight: bold;">How ready are you to start?</label>
+                        <input type="range" id="accessibility" name="accessibility" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="slider-container">
+                        <label style="font-weight: bold;">How beneficial is it?</label>
+                        <input type="range" id="return" name="return" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="slider-container">
+                        <label style="font-weight: bold;">How easy is it to finish?</label>
+                        <input type="range" id="vulnerability" name="vulnerability" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="slider-container">
+                        <label style="font-weight: bold;">How impactful is it?</label>
+                        <input type="range" id="effect" name="effect" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="slider-container">
+                        <label style="font-weight: bold;">How clear is the task?</label>
+                        <input type="range" id="recognizability" name="recognizability" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
                 </div>
                 <br/><br/>
                 <button type="submit" class="btn-save" style="margin-bottom: 15px;">Save</button>
@@ -836,6 +906,7 @@
         </div>
     </div>
 
+    <!-- Modal U Task -->
     <div class="modal" id="updateTaskModal">
         <div class="modal-content update-task-modal">
             <h1>Task</h1>
@@ -850,32 +921,90 @@
                         <input type="text" id="taskNameUpdate" name="taskNameUpdate" placeholder="Enter task name" required>
                     </div>
                     <div class="form-group update">
-                        <label>Task Deadline</label>
-                        <input type="date" id="taskDeadlineUpdate" name="taskDeadlineUpdate" required>
-                    </div>
-                </div>
-                
-                <!-- Second Row -->
-                <div class="form-row">
-                    <div class="form-group update">
-                        <label>Task Details</label>
-                        <textarea id="task-descUpdate" name="task-descUpdate" rows="4" placeholder="Enter task details"></textarea>
-                    </div>
-                    <div class="form-group update">
-                        <label>Task Importance Scale</label>
-                        <input type="range" id="importanceScaleUpdate" name="importanceScaleUpdate" min="1" max="10" required>
-                    </div>
-                </div>
-                
-                <!-- Third Row -->
-                <div class="form-row">
-                    <div class="form-group update">
                         <label for="taskType">Task Type</label>
                         <select id="taskTypeUpdate" name="taskTypeUpdate" required>
                             <option value="Work">Work</option>
                             <option value="School">School</option>
                             <option value="Personal">Personal</option>
                         </select>
+                    </div>
+                </div>
+                
+                <!-- Second Row -->
+                <div class="form-row">
+                    <div class="form-group update">
+                        <label>Task Deadline</label>
+                        <input type="date" id="taskDeadlineUpdate" name="taskDeadlineUpdate" required>
+                    </div>
+                    <div class="form-group update">
+                        <label>Task Details</label>
+                        <textarea id="task-descUpdate" name="task-descUpdate" rows="4" placeholder="Enter task details"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Third Row -->
+                <div class="form-row">
+                    <div class="form-group update">
+                        <label>How important is this task?</label>
+                        <input type="range" id="criticalityUpdate" name="criticalityUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                    <div class="form-group update">
+                        <label>How ready are you to start?</label>
+                        <input type="range" id="accessibilityUpdate" name="accessibilityUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fourth Row -->
+                <div class="form-row">
+                    <div class="form-group update">
+                        <label>How beneficial is it?</label>
+                        <input type="range" id="returnUpdate" name="returnUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                    <div class="form-group update">
+                        <label>How ready are you to start?</label>
+                        <input type="range" id="vulnerabilityUpdate" name="vulnerabilityUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fifth Row -->
+                <div class="form-row">
+                    <div class="form-group update">
+                        <label>How beneficial is it?</label>
+                        <input type="range" id="effectUpdate" name="effectUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                    <div class="form-group update">
+                        <label>How ready are you to start?</label>
+                        <input type="range" id="recognizabilityUpdate" name="recognizabilityUpdate" min="1" max="4" required>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -964,7 +1093,7 @@
                     taskDate.setDate(taskDate.getDate() + 1);
                     document.getElementById('taskDeadlineUpdate').value = taskDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
-                    document.getElementById('importanceScaleUpdate').value = task.extendedProps.impScale; //ImportantScale
+                    document.getElementById('criticalityUpdate').value = task.extendedProps.criticality; //ImportantScale
 
                     document.getElementById('taskTypeUpdate').value = task.extendedProps.type; //TaskType
 
@@ -973,6 +1102,17 @@
                     document.getElementById('currentTaskStatus').value = task.extendedProps.status; 
 
                     document.getElementById('task-descUpdate').value = task.extendedProps.desc;
+
+                    document.getElementById('accessibilityUpdate').value = task.extendedProps.accessibility;
+
+                    document.getElementById('returnUpdate').value = task.extendedProps.return;
+
+                    document.getElementById('recognizabilityUpdate').value = task.extendedProps.recognizability;
+
+                    document.getElementById('effectUpdate').value = task.extendedProps.effect;
+
+                    document.getElementById('vulnerabilityUpdate').value = task.extendedProps.vulnerability;
+
 
                     // change the text of the mark as '' button
                     const currentStatus = document.getElementById('currentTaskStatus').value;
@@ -1136,7 +1276,8 @@
                 dropdownMenu.style.display = 'none';
             });
 
-            // Add Task Modal logic
+            
+            // Update BG Image Modal logic
             const editBgButton = document.getElementById('edit-bg-button');
             const updateBgImage = document.getElementById('update-bg-img');
 
@@ -1151,17 +1292,19 @@
             });
 
 
-            // Update BG Image Modal logic
+            // Add Task Modal logic
             const addButton = document.querySelector('.add-button');
             const addTaskModal = document.getElementById('addTaskModal');
 
             addButton.addEventListener('click', () => {
                 addTaskModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; 
             });
 
             window.addEventListener('click', (event) => {
                 if (event.target === addTaskModal) {
                     addTaskModal.style.display = 'none';
+                    document.body.style.overflow = ''; 
                 }
             });
 
